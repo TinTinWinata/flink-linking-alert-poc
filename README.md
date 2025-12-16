@@ -1,6 +1,6 @@
-# Flink Vehicle Duplicate Detection POC
+# Flink Vehicle Duplicate Alert POC
 
-This is a Proof of Concept (POC) demonstrating how to use Apache Flink for real-time duplicate vehicle alert detection. The application processes vehicle alerts from RabbitMQ, detects duplicates for the same vehicle, and sends duplicate alerts to an HTTP endpoint.
+This is a Proof of Concept (POC) demonstrating how to use Apache Flink for real-time duplicate vehicle alert alert. The application processes vehicle alerts from RabbitMQ, detects duplicates for the same vehicle, and sends duplicate alerts to an HTTP endpoint.
 
 ## Overview
 
@@ -31,7 +31,7 @@ HTTP Endpoint (http://localhost:5000/test)
 The main Flink job that orchestrates the streaming pipeline:
 - Configures RabbitMQ connection
 - Sets up the data stream with keying by `vehicleId`
-- Applies duplicate detection logic
+- Applies duplicate alert logic
 - Sends results to HTTP sink
 
 ### 2. **VehicleDuplicateDetector**
@@ -83,7 +83,7 @@ java -cp target/classes:target/dependency/* org.example.VehicleDuplicateJob
 Or if you have a Flink cluster:
 
 ```bash
-flink run -c org.example.VehicleDuplicateJob target/flink-linking-detection-1.0-SNAPSHOT.jar
+flink run -c org.example.VehicleDuplicateJob target/flink-linking-alert-1.0-SNAPSHOT.jar
 ```
 
 ## Configuration
@@ -146,12 +146,12 @@ Example output:
 ## Project Structure
 
 ```
-flink-linking-detection/
+flink-linking-alert/
 ├── flink/
 │   ├── src/main/java/org/example/
 │   │   ├── VehicleDuplicateJob.java          # Main Flink job
 │   │   ├── detector/
-│   │   │   └── VehicleDuplicateDetector.java # Duplicate detection logic
+│   │   │   └── VehicleDuplicateDetector.java # Duplicate alert logic
 │   │   ├── model/
 │   │   │   ├── VehicleAlert.java              # Input model
 │   │   │   └── VehicleDuplicateAlert.java     # Output model
