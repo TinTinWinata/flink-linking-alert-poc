@@ -18,12 +18,39 @@ import java.util.List;
 public class EntityLinkingDetector extends KeyedProcessFunction<Integer, EntityEvent, LinkedEntityAlert> {
 
     private transient ValueState<List<Integer>> eventIds;
+    private transient ValueState<Long> time;
+
     private static final Logger log = LoggerFactory.getLogger(EntityLinkingDetector.class);
+
+    private int ONE_HOUR = 60 * 1000 * 1000;
 
     @Override
     public void open(Configuration parameters) throws Exception {
         ValueStateDescriptor<List<Integer>> eventIdsDescriptor = new ValueStateDescriptor<>("seen", Types.LIST(Types.INT));
+        ValueStateDescriptor<Long> timeDescriptor = new ValueStateDescriptor<>("time", Types.LONG);
+
         eventIds = getRuntimeContext().getState(eventIdsDescriptor);
+        time = getRuntimeContext().getState(timeDescriptor);
+    }
+
+    @Override
+    public void onTimer(long timestamp, KeyedProcessFunction<Integer, EntityEvent, LinkedEntityAlert>.OnTimerContext ctx, Collector<LinkedEntityAlert> out) throws Exception {
+        eventIds.clear();
+        time.clear();
+    }
+
+    private void setTimer(KeyedProcessFunction<Integer, EntityEvent, LinkedEntityAlert>.Context context) throws Exception {
+        long timer = context.timerService().currentProcessingTime();
+        long nextTimer = timer + ONE_HOUR;
+
+        Long lastSettedTimer = time.value();
+
+        if (lastSettedTimer != null) {
+            context.timerService().deleteProcessingTimeTimer(lastSettedTimer);
+        }
+
+        context.timerService().registerProcessingTimeTimer(nextTimer);
+        time.update(nextTimer);
     }
 
     @Override
@@ -44,6 +71,7 @@ public class EntityLinkingDetector extends KeyedProcessFunction<Integer, EntityE
         }
 
         eventIds.update(currentEventIds);
+        setTimer(context);
     }
 }
 

@@ -28,7 +28,7 @@ public class LinkedEntityHttpSink extends RichSinkFunction<LinkedEntityAlert> {
     public void invoke(LinkedEntityAlert value, Context context) throws Exception {
         String jsonPayload = objectMapper.writeValueAsString(value);
 
-        HttpPost httpPost = new HttpPost("http://d09418df108024258870g1omboayyyyyb.oast.pro/test");
+        HttpPost httpPost = new HttpPost("http://localhost:5050/test");
         httpPost.setHeader("Content-Type", "application/json");
         httpPost.setEntity(new StringEntity(jsonPayload, StandardCharsets.UTF_8));
 
